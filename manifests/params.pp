@@ -24,9 +24,37 @@ class prometheus::params {
   $config_dir = '/etc/prometheus'
   $config_mode = '0660'
   $config_template = 'prometheus/prometheus.yaml.erb'
+  $consul_exporter_download_extension = 'tar.gz'
+  $consul_exporter_download_url_base = 'https://github.com/prometheus/consul_exporter/releases'
+  $consul_exporter_extra_groups = []
+  $consul_exporter_group = 'consul-exporter'
+  $consul_exporter_package_ensure = 'latest'
+  $consul_exporter_package_name = 'consul_exporter'
+  $consul_exporter_user = 'consul-exporter'
+  $consul_exporter_version = '0.3.0'
+  $cloudwatch_exporter_config_content = {region => 'eu-west-1', metrics => []}
+  $cloudwatch_exporter_download_extension = 'jar'
+  $cloudwatch_exporter_download_url_base = 'http://search.maven.org/remotecontent?filepath=io/prometheus/cloudwatch/cloudwatch_exporter'
+  $cloudwatch_exporter_extra_groups = []
+  $cloudwatch_exporter_group = 'cloduwatch-exporter'
+  $cloudwatch_exporter_package_ensure = 'latest'
+  $cloudwatch_exporter_package_name = 'cloudwatch_exporter'
+  $cloudwatch_exporter_port = '9106'
+  $cloudwatch_exporter_user = 'cloudwatch-exporter'
+  $cloudwatch_exporter_version = '0.4'
   $download_extension = 'tar.gz'
   $download_url_base = 'https://github.com/prometheus/prometheus/releases'
   $extra_groups = []
+  $elasticsearch_exporter_download_extension = 'tar.gz'
+  $elasticsearch_exporter_download_url_base = 'https://github.com/justwatchcom/elasticsearch_exporter/releases'
+  $elasticsearch_exporter_extra_groups = []
+  $elasticsearch_exporter_group = 'elasticsearch-exporter'
+  $elasticsearch_exporter_listen_address = ':9108'
+  $elasticsearch_exporter_package_ensure = 'latest'
+  $elasticsearch_exporter_package_name = 'elasticsearch_exporter'
+  $elasticsearch_exporter_uri = 'http://localhost:9200'
+  $elasticsearch_exporter_user = 'elasticsearch-exporter'
+  $elasticsearch_exporter_version = '1.0.1'
   $global_config = { 'scrape_interval'=> '15s', 'evaluation_interval'=> '15s', 'external_labels'=> { 'monitor'=>'master'}}
   $group = 'prometheus'
   $install_method = 'url'

@@ -21,28 +21,55 @@ define prometheus::daemon (
   $service_ensure     = 'running',
   $service_enable     = true,
   $manage_service     = true,
+  $type               = 'go',
 ) {
 
   case $install_method {
     'url': {
-      archive { "/tmp/${name}-${version}.${download_extension}":
-        ensure          => present,
-        extract         => true,
-        extract_path    => '/opt',
-        source          => $real_download_url,
-        checksum_verify => false,
-        creates         => "/opt/${name}-${version}.${os}-${arch}/${name}",
-        cleanup         => true,
-      }
-      -> file { "/opt/${name}-${version}.${os}-${arch}/${name}":
-          owner => 'root',
-          group => 0, # 0 instead of root because OS X uses "wheel".
-          mode  => '0555',
-      }
-      -> file { "${bin_dir}/${name}":
-          ensure => link,
-          notify => $notify_service,
-          target => "/opt/${name}-${version}.${os}-${arch}/${name}",
+      case $type {
+        'go': {
+          archive { "/tmp/${name}-${version}.${download_extension}":
+            ensure          => present,
+            extract         => true,
+            extract_path    => '/opt',
+            source          => $real_download_url,
+            checksum_verify => false,
+            creates         => "/opt/${name}-${version}.${os}-${arch}/${name}",
+            cleanup         => true,
+          }
+          -> file { "/opt/${name}-${version}.${os}-${arch}/${name}":
+              owner => 'root',
+              group => 0, # 0 instead of root because OS X uses "wheel".
+              mode  => '0555',
+          }
+          -> file { "${bin_dir}/${name}":
+              ensure => link,
+              notify => $notify_service,
+              target => "/opt/${name}-${version}.${os}-${arch}/${name}",
+          }
+        }
+        'java': {
+          file { "/opt/${name}":
+            ensure => directory,
+            owner  => 'root',
+            group  => 0,
+            mode   => '0755',
+          } ->
+          archive { "/opt/${name}/${name}-${version}.${download_extension}":
+            source => $real_download_url,
+          } ->
+          file { "/opt/${name}/${name}-${version}.${download_extension}":
+              owner => 'root',
+              group => 0,
+              mode  => '0555',
+          } ->
+          file { "${bin_dir}/${name}":
+            ensure => file,
+            notify => $notify_service,
+            content => "#!/bin/bash\njava -jar /opt/${name}/${name}-${version}.${download_extension} \"$@\"",
+            mode => '0555',
+          }
+        }
       }
     }
     'package': {
